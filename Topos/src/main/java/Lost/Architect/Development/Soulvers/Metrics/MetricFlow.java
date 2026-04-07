@@ -7,7 +7,7 @@ import Lost.Architect.Development.Soulvers.Function.ElegantFunction;
 import java.util.List;
 
 @Invariant("Метрика для расчета потока параметра")
-public class MetricFlow implements ElegantMetric<Double, List<Double>>{
+public final class MetricFlow implements ElegantMetric<Double, List<Double>>{
 
     @Override
     @Invariant("Метрика рассчитывает поток параметра")

@@ -11,7 +11,7 @@ import java.util.List;
  * как будто бы в движок вшито уже это действие
  * */
 @Invariant("Метрика для расчета sinφ")
-public class MetricSinφ implements ElegantMetric<Double, List<Double>>{
+public final class MetricSinφ implements ElegantMetric<Double, List<Double>>{
 
     @Override
     @Invariant("Расчет величины синуса угла, как отношение противолежащего катета к гипотенузе")

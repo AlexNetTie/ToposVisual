@@ -7,7 +7,7 @@ import Lost.Architect.Development.Soulvers.Function.ElegantFunction;
 import java.util.List;
 
 @Invariant("Рассчитываем гипотенузу зная катеты")
-public class MetricHypotenuse implements ElegantMetric<Double,List<Double>> {
+public final class MetricHypotenuse implements ElegantMetric<Double,List<Double>> {
     @Override
     @Invariant("Расчет гипотенузы через катеты")
     @Parameters({"parameters.get(0) - это х",
