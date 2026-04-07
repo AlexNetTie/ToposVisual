@@ -13,7 +13,7 @@ public interface ElegantFunction {
     @Invariant("Умножение/деление с возведением в степень.")
     public double merge(double k, double x, double n);
 
-    @Invariant("Рассчет тригонометрических функции.")
+    @Invariant("Расчет тригонометрических функции.")
     public double trigonometric(double x, TrigonometricOperator op, TypeAngle type);
 
     @Invariant("Извлечение значения из тригонометрической функций.")
