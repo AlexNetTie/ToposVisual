@@ -4,7 +4,7 @@ import Lost.Architect.Development.Annotation.Invariant;
 import Lost.Architect.Development.Enum.TrigonometricOperator;
 import Lost.Architect.Development.Enum.TypeAngle;
 
-@Invariant("Универсальный носитель вычислений в теории")
+@Invariant("Имплементация мат. движка")
 public class ElegantFractalFunction implements ElegantFunction{
     @Override
     @Invariant("Для расчет сложения/вычитания с возведением в степень")
