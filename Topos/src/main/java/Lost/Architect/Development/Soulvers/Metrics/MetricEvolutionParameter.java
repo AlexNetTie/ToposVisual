@@ -7,7 +7,7 @@ import Lost.Architect.Development.Soulvers.Function.ElegantFunction;
 import java.util.List;
 
 @Invariant("Метрика для пересчета параметра.")
-public class MetricEvolutionParameter implements ElegantMetric<Double, List<Double>>{
+public final class MetricEvolutionParameter implements ElegantMetric<Double, List<Double>>{
 
     @Override
     @Invariant("Пересчет параметра.")
