@@ -1,11 +1,11 @@
-package Lost.Architect.Development.Soulvers.Function;
+package Lost.Architect.Development.Soulvers.Engine;
 
 import Lost.Architect.Development.Annotation.Invariant;
 import Lost.Architect.Development.Enum.TrigonometricOperator;
 import Lost.Architect.Development.Enum.TypeAngle;
 
 @Invariant("Имплементация мат. движка")
-public final class ElegantFractalFunction implements ElegantFunction {
+public final class Engine implements ElegantEngine {
 
     @Override
     @Invariant("Для расчет сложения/вычитания с возведением в степень")

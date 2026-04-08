@@ -2,7 +2,7 @@ package Lost.Architect.Development.Soulvers.Metrics;
 
 import Lost.Architect.Development.Annotation.Invariant;
 import Lost.Architect.Development.Annotation.Parameters;
-import Lost.Architect.Development.Soulvers.Function.ElegantFunction;
+import Lost.Architect.Development.Soulvers.Engine.ElegantEngine;
 
 import java.util.List;
 
@@ -17,9 +17,9 @@ public final class MetricSinφ implements ElegantMetric<Double, List<Double>>{
     @Invariant("Расчет величины синуса угла, как отношение противолежащего катета к гипотенузе")
     @Parameters({"parameters.get(0) - противолежащий катет",
                  "parameters.get(1) - гипотенуза"})
-    public Double solvedMetric(ElegantFunction el, List<Double> parameters) {
-        return el.merge(el.merge(1,parameters.get(0),1),
-                el.merge(1,parameters.get(1),-1),
-                1);
+    public Double solvedMetric(ElegantEngine en, List<Double> parameters) {
+        return en.merge(en.merge(1,parameters.get(0),1),
+                        en.merge(1,parameters.get(1),-1),
+                        1);
     }
 }

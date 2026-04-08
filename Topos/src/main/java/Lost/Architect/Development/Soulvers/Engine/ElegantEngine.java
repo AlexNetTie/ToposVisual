@@ -1,11 +1,11 @@
-package Lost.Architect.Development.Soulvers.Function;
+package Lost.Architect.Development.Soulvers.Engine;
 
 import Lost.Architect.Development.Annotation.Invariant;
 import Lost.Architect.Development.Enum.TrigonometricOperator;
 import Lost.Architect.Development.Enum.TypeAngle;
 
 @Invariant("Интерфейс абстрактного мат. движка с минимумом для любого численного метода.")
-public interface ElegantFunction {
+public interface ElegantEngine {
 
     @Invariant("Сложение/Вычитание с возведением в степень.")
     public double calculation(double x, double a, double n);

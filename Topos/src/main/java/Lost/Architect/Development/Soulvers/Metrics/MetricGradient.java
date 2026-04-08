@@ -2,7 +2,7 @@ package Lost.Architect.Development.Soulvers.Metrics;
 
 import Lost.Architect.Development.Annotation.Invariant;
 import Lost.Architect.Development.Annotation.Parameters;
-import Lost.Architect.Development.Soulvers.Function.ElegantFunction;
+import Lost.Architect.Development.Soulvers.Engine.ElegantEngine;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public final class MetricGradient implements ElegantMetric<Double,List<Double>> 
     @Parameters({"parameters.get(0) - current value",
                  "parameters.get(1) - next value",
                  "parameters.get(2) - ∂l"})
-    public Double solvedMetric(ElegantFunction el, List<Double> parameters) {
+    public Double solvedMetric(ElegantEngine el, List<Double> parameters) {
         return el.merge(
                 el.calculation(parameters.get(1), parameters.get(0)*(-1),1), //φ[1] - φ[0]
                 el.merge(1, parameters.get(2),-1), // 1/∂l

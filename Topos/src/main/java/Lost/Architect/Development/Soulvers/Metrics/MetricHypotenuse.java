@@ -2,7 +2,7 @@ package Lost.Architect.Development.Soulvers.Metrics;
 
 import Lost.Architect.Development.Annotation.Invariant;
 import Lost.Architect.Development.Annotation.Parameters;
-import Lost.Architect.Development.Soulvers.Function.ElegantFunction;
+import Lost.Architect.Development.Soulvers.Engine.ElegantEngine;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ public final class MetricHypotenuse implements ElegantMetric<Double,List<Double>
     @Parameters({"parameters.get(0) - это х",
                  "parameters.get(1) - это y",
                  "результат l = √(x² + y²)"})
-    public Double solvedMetric(ElegantFunction el, List<Double> parameters) {
-        return el.calculation(el.calculation(parameters.get(0),0,2),  // x²
-                              el.calculation(parameters.get(1),0,2 ), // y²
+    public Double solvedMetric(ElegantEngine en, List<Double> parameters) {
+        return en.calculation(en.calculation(parameters.get(0),0,2),  // x²
+                              en.calculation(parameters.get(1),0,2 ), // y²
                               0.5); // √
     }
 }
