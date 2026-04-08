@@ -6,6 +6,7 @@ import Lost.Architect.Development.Enum.TypeAngle;
 
 @Invariant("Имплементация мат. движка")
 public final class ElegantFractalFunction implements ElegantFunction {
+
     @Override
     @Invariant("Для расчет сложения/вычитания с возведением в степень")
     public double calculation(double x, double a, double n) {
