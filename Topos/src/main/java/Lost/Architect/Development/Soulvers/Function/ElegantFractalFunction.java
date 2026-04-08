@@ -5,7 +5,7 @@ import Lost.Architect.Development.Enum.TrigonometricOperator;
 import Lost.Architect.Development.Enum.TypeAngle;
 
 @Invariant("Имплементация мат. движка")
-public final class ElegantFractalFunction implements ElegantFunction{
+public final class ElegantFractalFunction implements ElegantFunction {
     @Override
     @Invariant("Для расчет сложения/вычитания с возведением в степень")
     public double calculation(double x, double a, double n) {
@@ -25,10 +25,10 @@ public final class ElegantFractalFunction implements ElegantFunction{
     @Invariant("Для расчета умножения/деления с коэффициентом пропорциональности")
     public double merge(double k, double x, double n) {
         if (n == -1.0) {
-            return 1 / k * x;
+            return 1 / (k * x);
         }
         if (n == 0.0) {
-            return 0.0;
+            return 1.0;
         }
         if (n == 1.0) {
             return k * x;
@@ -40,11 +40,11 @@ public final class ElegantFractalFunction implements ElegantFunction{
     @Invariant("Для расчета тригонометрических функций, type = угол в градусах или радианах который передаем")
     public double trigonometric(double x, TrigonometricOperator op, TypeAngle type) {
         double angle = x;
-        if(type == TypeAngle.degrees){
+        if (type == TypeAngle.degrees) {
             angle = Math.toRadians(angle);
         }
         double result;
-        if(op == TrigonometricOperator.cosφ){
+        if (op == TrigonometricOperator.cosφ) {
             result = Math.cos(angle);
         } else if (op == TrigonometricOperator.sinφ) {
             result = Math.sin(angle);
@@ -58,14 +58,14 @@ public final class ElegantFractalFunction implements ElegantFunction{
     @Invariant("Для извлечения угла, type - тип угла в градусах или радианах")
     public double extract(double x, TrigonometricOperator op, TypeAngle type) {
         double angle;
-        if(op == TrigonometricOperator.cosφ) {
+        if (op == TrigonometricOperator.cosφ) {
             angle = Math.acos(x);
-        } else if(op == TrigonometricOperator.sinφ) {
+        } else if (op == TrigonometricOperator.sinφ) {
             angle = Math.asin(x);
         } else {
             angle = Math.atan(x);
         }
-        if(type == TypeAngle.degrees){
+        if (type == TypeAngle.degrees) {
             angle = Math.toDegrees(angle);
         }
         return angle;
