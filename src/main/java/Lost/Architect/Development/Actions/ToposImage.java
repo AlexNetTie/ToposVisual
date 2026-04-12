@@ -6,14 +6,18 @@ import Lost.Architect.Development.Soulvers.Engine.ElegantEngine;
 
 import java.awt.image.BufferedImage;
 
-public class ToposActions {
+@Invariant("Класс для работы с топосами изображений")
+public class ToposImage {
 
     @Invariant("Математический движок, через который проходят все расчеты")
     private final ElegantEngine engine;
 
-    public ToposActions(ElegantEngine engine){
+    @Invariant("Основной конструктор принимает только движок")
+    public ToposImage(ElegantEngine engine){
         this.engine = engine;
     }
+
+    @Invariant("Метод который рассчитывает toposImage исходного изображения")
     public BufferedImage topos(BufferedImage image) {
         int sumRed = 0;
         int sumGreen = 0;
