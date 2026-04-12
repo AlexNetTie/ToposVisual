@@ -19,7 +19,7 @@ public class ToposImage {
         this.engine = engine;
     }
 
-    @TechDebt("Разбить класс на подфункции")
+    @TechDebt("Разбить метод на подфункции")
     @Invariant("Метод который рассчитывает toposImage исходного изображения")
     @Parameters("image - исходное изображение в отношении которого рассчитывается topos")
     public BufferedImage topos(BufferedImage image) {
