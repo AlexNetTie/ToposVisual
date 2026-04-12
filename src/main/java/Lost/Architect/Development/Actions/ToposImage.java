@@ -1,6 +1,8 @@
 package Lost.Architect.Development.Actions;
 
 import Lost.Architect.Development.Annotation.Invariant;
+import Lost.Architect.Development.Annotation.Parameters;
+import Lost.Architect.Development.Annotation.TechDebt;
 import Lost.Architect.Development.Data.DataPixel;
 import Lost.Architect.Development.Soulvers.Engine.ElegantEngine;
 
@@ -17,7 +19,9 @@ public class ToposImage {
         this.engine = engine;
     }
 
+    @TechDebt("Разбить класс на подфункции")
     @Invariant("Метод который рассчитывает toposImage исходного изображения")
+    @Parameters("image - исходное изображение в отношении которого рассчитывается topos")
     public BufferedImage topos(BufferedImage image) {
         int sumRed = 0;
         int sumGreen = 0;
