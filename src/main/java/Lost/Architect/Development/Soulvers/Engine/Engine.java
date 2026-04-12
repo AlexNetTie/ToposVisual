@@ -8,7 +8,7 @@ import Lost.Architect.Development.Enum.TypeAngle;
 public final class Engine implements ElegantEngine {
 
     @Override
-    @Invariant("Для расчет сложения/вычитания с возведением в степень")
+    @Invariant("Расчет сложения/вычитания с возведением в степень.")
     public double calculation(double x, double a, double n) {
         if (n == 0.0) {
             return 1.0;
