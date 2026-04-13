@@ -50,21 +50,43 @@ public class ToposImage {
 
     @Invariant("Расчет разницы между картинками.")
     @Parameters({"minuend - исходное изображение, из которого вычитают",
-                 "subtrahend - вычитаемое изображение",
-                 "sizeWidth - ширина результирующего изображения",
-                 "sizeHeight - высота результирующего изображения."})
-    public BufferedImage deltaImage(BufferedImage minuend, BufferedImage subtrahend , int sizeWidth, int sizeHeight) {
+            "subtrahend - вычитаемое изображение",
+            "sizeWidth - ширина результирующего изображения",
+            "sizeHeight - высота результирующего изображения."})
+    public BufferedImage deltaImage(BufferedImage minuend, BufferedImage subtrahend, int sizeWidth, int sizeHeight) {
         BufferedImage result = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_RGB);
         for (int y = 0; y < sizeHeight; y++) {
             for (int x = 0; x < sizeWidth; x++) {
                 DataPixel dataPixel1 = new DataPixel(minuend.getRGB(x, y));
-                DataPixel dataPixel2 = new DataPixel(subtrahend .getRGB(x, y));
+                DataPixel dataPixel2 = new DataPixel(subtrahend.getRGB(x, y));
                 DataPixel dataPixelResult = new DataPixel(
                         (int) engine.delta(dataPixel1.copyRed(), dataPixel2.copyRed(), 1),
                         (int) engine.delta(dataPixel1.copyGreen(), dataPixel2.copyGreen(), 1),
                         (int) engine.delta(dataPixel1.copyBlue(), dataPixel2.copyBlue(), 1)
                 );
-                result.setRGB(x,y,dataPixelResult.copyPixel());
+                result.setRGB(x, y, dataPixelResult.copyPixel());
+            }
+        }
+        return result;
+    }
+
+    @Invariant("Расчет разницы между картинками, с учетом ограничения (от 0 до 255) для цветов.")
+    @Parameters({"minuend - исходное изображение, из которого вычитают",
+            "subtrahend - вычитаемое изображение",
+            "sizeWidth - ширина результирующего изображения",
+            "sizeHeight - высота результирующего изображения."})
+    public BufferedImage deltaImageClamp(BufferedImage minuend, BufferedImage subtrahend, int sizeWidth, int sizeHeight) {
+        BufferedImage result = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_RGB);
+        for (int y = 0; y < sizeHeight; y++) {
+            for (int x = 0; x < sizeWidth; x++) {
+                DataPixel dataPixel1 = new DataPixel(minuend.getRGB(x, y));
+                DataPixel dataPixel2 = new DataPixel(subtrahend.getRGB(x, y));
+                DataPixel dataPixelResult = new DataPixel(
+                        Math.clamp((int) engine.delta(dataPixel1.copyRed(), dataPixel2.copyRed(), 1), 0, 255),
+                        Math.clamp((int) engine.delta(dataPixel1.copyGreen(), dataPixel2.copyGreen(), 1), 0, 255),
+                        Math.clamp((int) engine.delta(dataPixel1.copyBlue(), dataPixel2.copyBlue(), 1), 0, 255)
+                );
+                result.setRGB(x, y, dataPixelResult.copyPixel());
             }
         }
         return result;
