@@ -7,8 +7,11 @@ import Lost.Architect.Development.Enum.TypeAngle;
 @Invariant("Интерфейс абстрактного мат. движка с минимумом для любого численного метода.")
 public interface ElegantEngine {
 
-    @Invariant("Сложение/Вычитание с возведением в степень.")
+    @Invariant("Сложение с возведением в степень.")
     public double calculation(double x, double a, double n);
+
+    @Invariant("Вычитание с возведением в степень")
+    public double delta(double x, double a, double n);
 
     @Invariant("Умножение/деление с возведением в степень.")
     public double merge(double k, double x, double n);
