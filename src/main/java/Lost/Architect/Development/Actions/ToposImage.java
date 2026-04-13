@@ -19,10 +19,9 @@ public class ToposImage {
         this.engine = engine;
     }
 
-    @TechDebt("Разбить метод на подфункции.")
-    @Invariant("Метод который рассчитывает toposImage исходного изображения.")
-    @Parameters("image - исходное изображение в отношении которого рассчитывается topos.")
-    public BufferedImage topos(BufferedImage image) {
+    @Invariant("Метод который рассчитывает topos pixel исходного изображения")
+    @Parameters("Исходное изображение для которого рассчитывается topos pixel")
+    public DataPixel topos(BufferedImage image) {
         int sumRed = 0;
         int sumGreen = 0;
         int sumBlue = 0;
@@ -34,15 +33,19 @@ public class ToposImage {
                 sumBlue = (int) engine.calculation(sumBlue, data.copyBlue(), 1);
             }
         }
-
         int sumSize = image.getHeight() * image.getWidth();
+        return new DataPixel(sumRed / sumSize, sumGreen / sumSize, sumBlue / sumSize);
+    }
 
-        DataPixel dataAveragePixel = new DataPixel(sumRed / sumSize, sumGreen / sumSize, sumBlue / sumSize);
-
-        BufferedImage toposImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-        for (int y = 0; y < image.getHeight(); y++) {
-            for (int x = 0; x < image.getWidth(); x++) {
-                toposImage.setRGB(x, y, dataAveragePixel.copyPixel());
+    @Invariant("Метод для создания toposImage на основе toposPixel")
+    @Parameters({"toposPixel - топос пиксель",
+                 "sizeWidth - ширина изображения",
+                 "sizeHeight - высота изображения"})
+    public BufferedImage creationToposImage(DataPixel toposPixel, int sizeWidth, int sizeHeight) {
+        BufferedImage toposImage = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_RGB);
+        for (int y = 0; y < sizeHeight; y++) {
+            for (int x = 0; x < sizeWidth; x++) {
+                toposImage.setRGB(x,y,toposPixel.copyPixel());
             }
         }
         return toposImage;
