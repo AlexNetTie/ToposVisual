@@ -19,8 +19,8 @@ public class ToposImage {
         this.engine = engine;
     }
 
-    @Invariant("Метод который рассчитывает topos pixel исходного изображения")
-    @Parameters("Исходное изображение для которого рассчитывается topos pixel")
+    @Invariant("Метод который рассчитывает topos pixel исходного изображения.")
+    @Parameters("Исходное изображение для которого рассчитывается topos pixel.")
     public DataPixel topos(BufferedImage image) {
         int sumRed = 0;
         int sumGreen = 0;
@@ -37,10 +37,10 @@ public class ToposImage {
         return new DataPixel(sumRed / sumSize, sumGreen / sumSize, sumBlue / sumSize);
     }
 
-    @Invariant("Метод для создания toposImage на основе toposPixel")
+    @Invariant("Метод для создания toposImage на основе toposPixel.")
     @Parameters({"toposPixel - топос пиксель",
             "sizeWidth - ширина изображения",
-            "sizeHeight - высота изображения"})
+            "sizeHeight - высота изображения."})
     public BufferedImage creationToposImage(DataPixel toposPixel, int sizeWidth, int sizeHeight) {
         BufferedImage toposImage = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_RGB);
         for (int y = 0; y < sizeHeight; y++) {
