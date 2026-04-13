@@ -39,13 +39,13 @@ public class ToposImage {
 
     @Invariant("Метод для создания toposImage на основе toposPixel")
     @Parameters({"toposPixel - топос пиксель",
-                 "sizeWidth - ширина изображения",
-                 "sizeHeight - высота изображения"})
+            "sizeWidth - ширина изображения",
+            "sizeHeight - высота изображения"})
     public BufferedImage creationToposImage(DataPixel toposPixel, int sizeWidth, int sizeHeight) {
         BufferedImage toposImage = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_RGB);
         for (int y = 0; y < sizeHeight; y++) {
             for (int x = 0; x < sizeWidth; x++) {
-                toposImage.setRGB(x,y,toposPixel.copyPixel());
+                toposImage.setRGB(x, y, toposPixel.copyPixel());
             }
         }
         return toposImage;
