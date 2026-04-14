@@ -4,7 +4,7 @@ import Lost.Architect.Development.Annotation.ArchitectSolution;
 import Lost.Architect.Development.Annotation.Invariant;
 
 @Invariant("Класс, что хранит в себе параметры градиента для картинки.")
-public class DataPixelContainer {
+public class DataPixelGradient {
 
     @Invariant("Хранит градиент красного цвета.")
     private final double red;
@@ -17,7 +17,7 @@ public class DataPixelContainer {
 
     @Invariant("Конструктор, что принимает на вход градиенты.")
     @ArchitectSolution("Конструктор один, принимает на вход только градиенты.")
-    public DataPixelContainer(double red, double green, double blue){
+    public DataPixelGradient(double red, double green, double blue){
         this.red = red;
         this.blue = blue;
         this.green = green;
@@ -36,6 +36,11 @@ public class DataPixelContainer {
     @Invariant("Возвращает копию значения голубого компонента градиента.")
     public double copyBlue(){
         return this.blue;
+    }
+
+    @Invariant("Возвращает суммарный градиент")
+    public double summaryGradient(){
+        return this.red + this.green + this.blue;
     }
 
 }
