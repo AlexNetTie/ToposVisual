@@ -130,5 +130,55 @@ public class MeanCurvatureMotionImage {
         return result;
     }
 
+    @Invariant("Расчет горизонтальной компоненты кривизны или дивергенции нормали.")
+    public double[][] solvedKxComponent(double[][] componentNormalVector) {
+        int width = componentNormalVector.length;
+        int height = componentNormalVector[0].length;
+        double[][] result = new double[width][height];
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (x == 0) {
+                    result[x][y] = 0;
+                } else if (x == (width - 1)) {
+                    result[x][y] = 0;
+                } else {
+                    result[x][y] = (componentNormalVector[x + 1][y] - componentNormalVector[x - 1][y]) / 2;
+                }
+            }
+        }
+        return result;
+    }
 
+    @Invariant("Расчет вертикальной компоненты кривизны или дивергенции нормали.")
+    public double[][] solvedKyComponent(double[][] componentNormalVector) {
+        int width = componentNormalVector.length;
+        int height = componentNormalVector[0].length;
+        double[][] result = new double[width][height];
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (y == 0) {
+                    result[x][y] = 0;
+                } else if (y == (height - 1)) {
+                    result[x][y] = 0;
+                } else {
+                    result[x][y] = (componentNormalVector[x][y + 1] - componentNormalVector[x][y - 1]) / 2;
+                }
+            }
+        }
+        return result;
+    }
+
+    @Invariant("Расчет полной кривизны (дивергенции нормали)")
+    public double[][] solvedCurvature(double[][] kx, double[][] ky) {
+        int width = kx.length;
+        int height = kx[0].length;
+        double[][] kappa = new double[width][height];
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                kappa[x][y] = kx[x][y] + ky[x][y];
+            }
+        }
+        return kappa;
+    }
 }
