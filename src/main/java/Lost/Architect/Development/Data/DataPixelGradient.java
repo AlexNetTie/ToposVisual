@@ -4,7 +4,7 @@ import Lost.Architect.Development.Annotation.ArchitectSolution;
 import Lost.Architect.Development.Annotation.Invariant;
 
 @Invariant("Класс, что хранит в себе параметры градиента для картинки.")
-public class DataPixelGradient {
+public final class DataPixelGradient {
 
     @Invariant("Хранит градиент красного цвета.")
     private final double red;
