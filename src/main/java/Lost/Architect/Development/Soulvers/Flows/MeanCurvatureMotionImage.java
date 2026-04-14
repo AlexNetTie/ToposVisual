@@ -118,7 +118,16 @@ public class MeanCurvatureMotionImage {
         int width = gradients.length;
         int height = gradients[0].length;
         double[][] result = new double[width][height];
-        return null;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (moduleGradient[x][y] < 1e-9) { // если почти ноль
+                    result[x][y] = 0.0;
+                } else {
+                    result[x][y] = gradients[x][y].summaryGradient() / moduleGradient[x][y];
+                }
+            }
+        }
+        return result;
     }
 
 
