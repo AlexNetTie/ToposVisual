@@ -9,11 +9,22 @@ import Lost.Architect.Development.Data.DataPixelGradient;
 
 import java.awt.image.BufferedImage;
 
-import static java.lang.Math.clamp;
+@Invariant("Старая имплементация потока MeanCurvatureMotionImage.")
+@ArchitectSolution("В этом потоке были замечены фракталы именно по этой причине принято решение оставить эту имплементацию и поисследовать ее.")
+public class SnowFlake {
 
-@TechDebt("Пересмотреть по итогу написания solver-а его архитектуру.")
-@Invariant("Класс для расчета кривизны.")
-public class MeanCurvatureMotionImage {
+    /**
+     * Фракталы что похожи на морозный узор замечены при запуске solver-a со следующими параметрами
+     *
+     * MeanCurvatureMotionImage solver = new MeanCurvatureMotionImage();
+     * BufferedImage smoothImage = solver.solveMeanCurvatureMotionImage(image,100,0.1);
+     * File output1 = new File("C:\\Users\\AlexPC\\Desktop\\image\\smoothImage.jpg");
+     * ImageIO.write(smoothImage,"jpg",output1);
+     * System.out.println("Smooth Image is created!!!");
+     *
+     * топосы говорят о нарушении топологии при работе потока
+     * эффект очень интересный оставлен для исследования
+     * */
 
     @Invariant("Расчет вертикальной составляющей градиента")
     @ArchitectSolution("Градиенты вертикальный и горизонтальный специально разбиты на два отдельных метода")

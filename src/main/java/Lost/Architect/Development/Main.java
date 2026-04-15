@@ -27,7 +27,7 @@ public class Main {
         System.out.println("Topos создан!");
 
         MeanCurvatureMotionImage solver = new MeanCurvatureMotionImage();
-        BufferedImage smoothImage = solver.solveMeanCurvatureMotionImage(image,200,0.1);
+        BufferedImage smoothImage = solver.solveMeanCurvatureMotionImage(image,100,0.1);
         File output1 = new File("C:\\Users\\AlexPC\\Desktop\\image\\smoothImage.jpg");
         ImageIO.write(smoothImage,"jpg",output1);
         System.out.println("Smooth Image is created!!!");
