@@ -232,7 +232,7 @@ public class MeanCurvatureMotionImage {
         return result;
     }
 
-    @Invariant("Полноценный солвер для расчета.")
+    @Invariant("Полноценный solver для расчета.")
     public BufferedImage solveMeanCurvatureMotionImage(BufferedImage image, int iterations, double dt) {
         BufferedImage current = image;
 
