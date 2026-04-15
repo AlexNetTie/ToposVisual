@@ -13,8 +13,8 @@ import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        BufferedImage image = ImageIO.read(Objects.requireNonNull(Main.class.getResourceAsStream("/photo_2026-04-12_19-39-51.jpg")));
-
+        //BufferedImage image = ImageIO.read(Objects.requireNonNull(Main.class.getResourceAsStream("/photo_2026-04-12_19-39-51.jpg")));
+        BufferedImage image = ImageIO.read(Objects.requireNonNull(Main.class.getResourceAsStream("/four.png")));
         System.out.println("Ширина: " + image.getWidth());
         System.out.println("Высота: " + image.getHeight());
 
@@ -27,7 +27,7 @@ public class Main {
         System.out.println("Topos создан!");
 
         MeanCurvatureMotionImage solver = new MeanCurvatureMotionImage();
-        BufferedImage smoothImage = solver.solveMeanCurvatureMotionImage(image,100,0.1);
+        BufferedImage smoothImage = solver.solveMeanCurvatureMotionImage(image,100,0.001);
         File output1 = new File("C:\\Users\\AlexPC\\Desktop\\image\\smoothImage.jpg");
         ImageIO.write(smoothImage,"jpg",output1);
         System.out.println("Smooth Image is created!!!");

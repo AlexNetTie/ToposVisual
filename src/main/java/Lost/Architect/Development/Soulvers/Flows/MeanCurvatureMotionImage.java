@@ -9,8 +9,6 @@ import Lost.Architect.Development.Data.DataPixelGradient;
 
 import java.awt.image.BufferedImage;
 
-import static java.lang.Math.clamp;
-
 @TechDebt("Пересмотреть по итогу написания solver-а его архитектуру.")
 @Invariant("Класс для расчета кривизны.")
 public class MeanCurvatureMotionImage {
@@ -197,13 +195,9 @@ public class MeanCurvatureMotionImage {
                 double flow = dt * moduleGradient[x][y] * curvature[x][y];
 
                 // Новые значения с ограничением 0-255
-//                int newRed = (int) Math.clamp(current.copyRed() + flow, 0, 255);
-//                int newGreen = (int) Math.clamp(current.copyGreen() + flow, 0, 255);
-//                int newBlue = (int) Math.clamp(current.copyBlue() + flow, 0, 255);
-
-                int newRed = (int) (current.copyRed() + flow);
-                int newGreen = (int) (current.copyGreen() + flow);
-                int newBlue = (int) (current.copyBlue() + flow);
+                int newRed = (int) Math.clamp(current.copyRed() + flow, 0, 255);
+                int newGreen = (int) Math.clamp(current.copyGreen() + flow, 0, 255);
+                int newBlue = (int) Math.clamp(current.copyBlue() + flow, 0, 255);
 
                 DataPixel evolutionPixel = new DataPixel(newRed, newGreen, newBlue);
                 evolutionImage.setRGB(x, y, evolutionPixel.copyPixel());
