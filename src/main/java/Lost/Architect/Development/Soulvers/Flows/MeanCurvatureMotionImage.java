@@ -237,6 +237,7 @@ public class MeanCurvatureMotionImage {
         BufferedImage current = image;
 
         for (int i = 0; i < iterations; i++) {
+            System.out.println("Итерация №" + i);
             current = oneStepSolved(current, dt);
         }
 
