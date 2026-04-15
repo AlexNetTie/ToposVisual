@@ -207,4 +207,39 @@ public class MeanCurvatureMotionImage {
         }
         return evolutionImage;
     }
+
+    @Invariant("Расчет одного шага.")
+    public BufferedImage oneStepSolved(BufferedImage image, double dt){
+        // 1. Градиенты
+        DataPixelGradient[][] Ix = solvedHorizontalGradient(image);
+        DataPixelGradient[][] Iy = solvedVerticalGradient(image);
+
+        // 2. Модуль
+        double[][] module = solvedModuleGradientStandard(Iy, Ix);
+
+        // 3. Нормали
+        double[][] Nx = solvedUnitNormalVector(Ix, module);
+        double[][] Ny = solvedUnitNormalVector(Iy, module);
+
+        // 4. Кривизна
+        double[][] kx = solvedKxComponent(Nx);
+        double[][] ky = solvedKyComponent(Ny);
+        double[][] kappa = solvedCurvature(kx, ky);
+
+        // 5. Эволюция
+        BufferedImage result = evolutionImage(image, module, kappa, dt);
+
+        return result;
+    }
+
+    @Invariant("Полноценный солвер для расчета.")
+    public BufferedImage solveMeanCurvatureMotionImage(BufferedImage image, int iterations, double dt) {
+        BufferedImage current = image;
+
+        for (int i = 0; i < iterations; i++) {
+            current = oneStepSolved(current, dt);
+        }
+
+        return current;
+    }
 }
