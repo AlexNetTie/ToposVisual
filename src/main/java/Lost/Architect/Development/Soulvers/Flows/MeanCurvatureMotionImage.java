@@ -185,21 +185,21 @@ public class MeanCurvatureMotionImage {
     }
 
     @Invariant("Метод по расчету новых значений для картинки. R_new = R + dt * module * kappa.")
-    public BufferedImage evolutionImage(BufferedImage image, double[][] moduleGradient, double[][] curvature,double dt){
+    public BufferedImage evolutionImage(BufferedImage image, double[][] moduleGradient, double[][] curvature, double dt) {
         int width = image.getWidth();
         int height = image.getHeight();
-        BufferedImage evolutionImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
-        for (int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
+        BufferedImage evolutionImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 DataPixel current = new DataPixel(image.getRGB(x, y));
 
                 // Поток: dt * |∇I| * κ
                 double flow = dt * moduleGradient[x][y] * curvature[x][y];
 
                 // Новые значения с ограничением 0-255
-                int newRed   = (int) Math.clamp(current.copyRed() + flow,0,255);
-                int newGreen = (int) Math.clamp(current.copyGreen() + flow,0,255);
-                int newBlue  = (int)Math.clamp(current.copyBlue() + flow,0,255);
+                int newRed = (int) Math.clamp(current.copyRed() + flow, 0, 255);
+                int newGreen = (int) Math.clamp(current.copyGreen() + flow, 0, 255);
+                int newBlue = (int) Math.clamp(current.copyBlue() + flow, 0, 255);
 
                 DataPixel evolutionPixel = new DataPixel(newRed, newGreen, newBlue);
                 evolutionImage.setRGB(x, y, evolutionPixel.copyPixel());
