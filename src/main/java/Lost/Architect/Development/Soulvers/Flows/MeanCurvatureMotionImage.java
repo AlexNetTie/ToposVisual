@@ -182,6 +182,35 @@ public class MeanCurvatureMotionImage {
         return kappa;
     }
 
+    //    @Invariant("Вычисление средней кривизны по всем пикселям с ненулевым градиентом.")
+//    private double computeAverageCurvature(double[][] kappa, double[][] module) {
+//        double sum = 0;
+//        int count = 0;
+//
+//        for (int x = 0; x < kappa.length; x++) {
+//            for (int y = 0; y < kappa[0].length; y++) {
+//                if (module[x][y] > 1e-6) {
+//                    sum += kappa[x][y];
+//                    count++;
+//                }
+//            }
+//        }
+//        return count > 0 ? sum / count : 0;
+//    }
+    @Invariant("Вычисление средней кривизны по ВСЕМ пикселям изображения.")
+    private double computeAverageCurvatureGlobal(double[][] kappa) {
+        double sum = 0;
+        int width = kappa.length;
+        int height = kappa[0].length;
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                sum += kappa[x][y];
+            }
+        }
+        return sum / (width * height);
+    }
+
     @Invariant("Метод по расчету новых значений для картинки. R_new = R + dt * module * kappa.")
     public BufferedImage evolutionImage(BufferedImage image, double[][] moduleGradient, double[][] curvature, double dt) {
         int width = image.getWidth();
@@ -195,9 +224,14 @@ public class MeanCurvatureMotionImage {
                 double flow = dt * moduleGradient[x][y] * curvature[x][y];
 
                 // Новые значения с ограничением 0-255
-                int newRed = (int) Math.clamp(current.copyRed() + flow, 0, 255);
-                int newGreen = (int) Math.clamp(current.copyGreen() + flow, 0, 255);
-                int newBlue = (int) Math.clamp(current.copyBlue() + flow, 0, 255);
+//                int newRed = (int) Math.clamp(current.copyRed() + flow, 0, 255);
+//                int newGreen = (int) Math.clamp(current.copyGreen() + flow, 0, 255);
+//                int newBlue = (int) Math.clamp(current.copyBlue() + flow, 0, 255);
+
+                int newRed = (int) (current.copyRed() + flow);
+                int newGreen = (int) (current.copyGreen() + flow);
+                int newBlue = (int) (current.copyBlue() + flow);
+
 
                 DataPixel evolutionPixel = new DataPixel(newRed, newGreen, newBlue);
                 evolutionImage.setRGB(x, y, evolutionPixel.copyPixel());
@@ -207,7 +241,7 @@ public class MeanCurvatureMotionImage {
     }
 
     @Invariant("Расчет одного шага.")
-    public BufferedImage oneStepSolved(BufferedImage image, double dt){
+    public BufferedImage oneStepSolved(BufferedImage image, double dt) {
         // 1. Градиенты
         DataPixelGradient[][] Ix = solvedHorizontalGradient(image);
         DataPixelGradient[][] Iy = solvedVerticalGradient(image);
@@ -230,6 +264,84 @@ public class MeanCurvatureMotionImage {
         return result;
     }
 
+//    @Invariant("Метод по расчету новых значений с сохранением объема. R_new = R + dt * module * (kappa - kappaAvg).")
+//    public BufferedImage evolutionImageVolumePreserving(BufferedImage image, double[][] moduleGradient, double[][] curvature, double kappaAvg, double dt) {
+//        int width = image.getWidth();
+//        int height = image.getHeight();
+//        BufferedImage evolutionImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+//
+//        for (int x = 0; x < width; x++) {
+//            for (int y = 0; y < height; y++) {
+//                DataPixel current = new DataPixel(image.getRGB(x, y));
+//
+//                // Поток: dt * |∇I| * (κ - κ_avg)
+//                double adjustedKappa = curvature[x][y] - kappaAvg;
+//                double flow = dt * moduleGradient[x][y] * adjustedKappa;
+//
+//                int newRed = (int) Math.clamp(current.copyRed() + flow, 0, 255);
+//                int newGreen = (int) Math.clamp(current.copyGreen() + flow, 0, 255);
+//                int newBlue = (int) Math.clamp(current.copyBlue() + flow, 0, 255);
+//
+//                evolutionImage.setRGB(x, y, new DataPixel(newRed, newGreen, newBlue).copyPixel());
+//            }
+//        }
+//        return evolutionImage;
+//    }
+
+
+//    @Invariant("Расчет одного шага с сохранением объема (Volume-Preserving MCM).")
+//    public BufferedImage oneStepSolvedVolumePreserving(BufferedImage image, double dt) {
+//        // 1. Градиенты
+//        DataPixelGradient[][] Ix = solvedHorizontalGradient(image);
+//        DataPixelGradient[][] Iy = solvedVerticalGradient(image);
+//
+//        // 2. Модуль
+//        double[][] module = solvedModuleGradientStandard(Iy, Ix);
+//
+//        // 3. Нормали
+//        double[][] Nx = solvedUnitNormalVector(Ix, module);
+//        double[][] Ny = solvedUnitNormalVector(Iy, module);
+//
+//        // 4. Кривизна
+//        double[][] kx = solvedKxComponent(Nx);
+//        double[][] ky = solvedKyComponent(Ny);
+//        double[][] kappa = solvedCurvature(kx, ky);
+//
+//        // 5. Средняя кривизна
+//        //double kappaAvg = computeAverageCurvature(kappa, module);
+//        // 5. Средняя кривизна (глобальная)
+//        double kappaAvg = computeAverageCurvatureGlobal(kappa);
+//
+//        // 6. Эволюция с вычитанием средней кривизны
+//        //BufferedImage result = evolutionImageVolumePreserving(image, module, kappa, kappaAvg, dt);
+//
+//        // 6. Эволюция БЕЗ clamp
+//        BufferedImage evolved = evolutionImageVolumePreservingNoClamp(image, module, kappa, kappaAvg, dt);
+//
+//        // 7. Нормализация обратно в [0, 255]
+//        BufferedImage result = normalizeImage(evolved);
+//
+//        return result;
+//    }
+    @Invariant("Расчет одного шага с сохранением объема и ограничением по вместимости.")
+    public BufferedImage oneStepSolvedVolumePreserving(BufferedImage image, double dt) {
+        // 1-4. Градиенты, модуль, нормали, кривизна (как раньше)
+        DataPixelGradient[][] Ix = solvedHorizontalGradient(image);
+        DataPixelGradient[][] Iy = solvedVerticalGradient(image);
+        double[][] module = solvedModuleGradientStandard(Iy, Ix);
+        double[][] Nx = solvedUnitNormalVector(Ix, module);
+        double[][] Ny = solvedUnitNormalVector(Iy, module);
+        double[][] kx = solvedKxComponent(Nx);
+        double[][] ky = solvedKyComponent(Ny);
+        double[][] kappa = solvedCurvature(kx, ky);
+
+        // 5. Глобальная средняя кривизна
+        double kappaAvg = computeAverageCurvatureGlobal(kappa);
+
+        // 6. Эволюция с ограничением по вместимости
+        return evolutionImageVolumePreservingCapacity(image, module, kappa, kappaAvg, dt);
+    }
+
     @Invariant("Полноценный solver для расчета.")
     public BufferedImage solveMeanCurvatureMotionImage(BufferedImage image, int iterations, double dt) {
         BufferedImage current = image;
@@ -240,5 +352,135 @@ public class MeanCurvatureMotionImage {
         }
 
         return current;
+    }
+
+    @Invariant("Полноценный Volume-Preserving solver.")
+    public BufferedImage solveMCMVolumePreserving(BufferedImage image, int iterations, double dt) {
+        BufferedImage current = image;
+
+        for (int i = 0; i < iterations; i++) {
+            System.out.println("Итерация №" + i);
+            current = oneStepSolvedVolumePreserving(current, dt);
+        }
+
+        return current;
+    }
+
+//    @Invariant("Нормализация изображения в диапазон [0, 255] по всем каналам.")
+//    private BufferedImage normalizeImage(BufferedImage image) {
+//        int width = image.getWidth();
+//        int height = image.getHeight();
+//
+//        // Находим min и max по всем каналам
+//        double minR = 255, maxR = 0;
+//        double minG = 255, maxG = 0;
+//        double minB = 255, maxB = 0;
+//
+//        for (int x = 0; x < width; x++) {
+//            for (int y = 0; y < height; y++) {
+//                DataPixel p = new DataPixel(image.getRGB(x, y));
+//                minR = Math.min(minR, p.copyRed());
+//                maxR = Math.max(maxR, p.copyRed());
+//                minG = Math.min(minG, p.copyGreen());
+//                maxG = Math.max(maxG, p.copyGreen());
+//                minB = Math.min(minB, p.copyBlue());
+//                maxB = Math.max(maxB, p.copyBlue());
+//            }
+//        }
+//
+//        // Нормализуем
+//        BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+//        double rangeR = maxR - minR;
+//        double rangeG = maxG - minG;
+//        double rangeB = maxB - minB;
+//
+//        for (int x = 0; x < width; x++) {
+//            for (int y = 0; y < height; y++) {
+//                DataPixel p = new DataPixel(image.getRGB(x, y));
+//
+//                int newRed = (rangeR > 0)
+//                        ? (int) Math.round((p.copyRed() - minR) * 255.0 / rangeR)
+//                        : (int) Math.round(p.copyRed());
+//
+//                int newGreen = (rangeG > 0)
+//                        ? (int) Math.round((p.copyGreen() - minG) * 255.0 / rangeG)
+//                        : (int) Math.round(p.copyGreen());
+//
+//                int newBlue = (rangeB > 0)
+//                        ? (int) Math.round((p.copyBlue() - minB) * 255.0 / rangeB)
+//                        : (int) Math.round(p.copyBlue());
+//
+//                result.setRGB(x, y, new DataPixel(newRed, newGreen, newBlue).copyPixel());
+//            }
+//        }
+//        return result;
+//    }
+
+//    @Invariant("Метод по расчету новых значений БЕЗ clamp. R_new = R + dt * module * (kappa - kappaAvg).")
+//    public BufferedImage evolutionImageVolumePreservingNoClamp(BufferedImage image, double[][] moduleGradient, double[][] curvature, double kappaAvg, double dt) {
+//
+//        int width = image.getWidth();
+//        int height = image.getHeight();
+//        BufferedImage evolutionImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+//
+//        for (int x = 0; x < width; x++) {
+//            for (int y = 0; y < height; y++) {
+//                DataPixel current = new DataPixel(image.getRGB(x, y));
+//
+//                double adjustedKappa = curvature[x][y] - kappaAvg;
+//                double flow = dt * moduleGradient[x][y] * adjustedKappa;
+//
+//                // БЕЗ clamp — просто округляем
+////                int newRed   = (int) Math.round(current.copyRed() + flow);
+////                int newGreen = (int) Math.round(current.copyGreen() + flow);
+////                int newBlue  = (int) Math.round(current.copyBlue() + flow);
+//                int newRed = (int) Math.clamp(current.copyRed() + flow,0,255);
+//                int newGreen = (int) Math.clamp(current.copyGreen() + flow,0,255);
+//                int newBlue  = (int) Math.clamp(current.copyBlue() + flow,0,255);
+//                evolutionImage.setRGB(x, y, new DataPixel(newRed, newGreen, newBlue).copyPixel());
+//            }
+//        }
+//        return evolutionImage;
+//    }
+
+    @Invariant("Метод с ограничением потока по вместимости ячейки (без clamp, без переполнения).")
+    public BufferedImage evolutionImageVolumePreservingCapacity(
+            BufferedImage image,
+            double[][] moduleGradient,
+            double[][] curvature,
+            double kappaAvg,
+            double dt) {
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+        BufferedImage evolutionImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                DataPixel current = new DataPixel(image.getRGB(x, y));
+
+                double adjustedKappa = curvature[x][y] - kappaAvg;
+                double desiredFlow = dt * moduleGradient[x][y] * adjustedKappa;
+
+                // Ограничение потока вместимостью ячейки
+                int newRed   = applyCapacityLimit(current.copyRed(), desiredFlow);
+                int newGreen = applyCapacityLimit(current.copyGreen(), desiredFlow);
+                int newBlue  = applyCapacityLimit(current.copyBlue(), desiredFlow);
+
+                evolutionImage.setRGB(x, y, new DataPixel(newRed, newGreen, newBlue).copyPixel());
+            }
+        }
+        return evolutionImage;
+    }
+
+    @Invariant("Применяет поток с учётом вместимости ячейки [0, 255].")
+    private int applyCapacityLimit(double currentValue, double desiredFlow) {
+        double actualFlow;
+        if (desiredFlow > 0) {
+            actualFlow = Math.min(desiredFlow, 255 - currentValue);
+        } else {
+            actualFlow = Math.max(desiredFlow, -currentValue);
+        }
+        return (int) Math.round(currentValue + actualFlow);
     }
 }
