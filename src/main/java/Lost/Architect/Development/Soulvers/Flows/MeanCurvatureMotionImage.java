@@ -9,7 +9,7 @@ import Lost.Architect.Development.Data.DataPixelGradient;
 
 import java.awt.image.BufferedImage;
 
-@TechDebt("Пересмотреть по итогу написания solver-а его архитектуру.")
+@TechDebt("Пересмотреть по итогу написание solver-а его архитектуру.")
 @Invariant("Класс для расчета кривизны.")
 public class MeanCurvatureMotionImage {
 
