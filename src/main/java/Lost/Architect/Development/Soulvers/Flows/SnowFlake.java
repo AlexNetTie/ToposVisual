@@ -13,19 +13,6 @@ import java.awt.image.BufferedImage;
 @ArchitectSolution("В этом потоке были замечены фракталы именно по этой причине принято решение оставить эту имплементацию и поисследовать ее.")
 public class SnowFlake {
 
-    /**
-     * Фракталы что похожи на морозный узор замечены при запуске solver-a со следующими параметрами
-     *
-     * MeanCurvatureMotionImage solver = new MeanCurvatureMotionImage();
-     * BufferedImage smoothImage = solver.solveMeanCurvatureMotionImage(image,100,0.1);
-     * File output1 = new File("C:\\Users\\AlexPC\\Desktop\\image\\smoothImage.jpg");
-     * ImageIO.write(smoothImage,"jpg",output1);
-     * System.out.println("Smooth Image is created!!!");
-     *
-     * топосы говорят о нарушении топологии при работе потока
-     * эффект очень интересный оставлен для исследования
-     * */
-
     @Invariant("Расчет вертикальной составляющей градиента")
     @ArchitectSolution("Градиенты вертикальный и горизонтальный специально разбиты на два отдельных метода")
     @Parameters({"image - исходное изображение",
@@ -207,20 +194,49 @@ public class SnowFlake {
                 // Поток: dt * |∇I| * κ
                 double flow = dt * moduleGradient[x][y] * curvature[x][y];
 
-                // Новые значения с ограничением 0-255
-//                int newRed = (int) Math.clamp(current.copyRed() + flow, 0, 255);
-//                int newGreen = (int) Math.clamp(current.copyGreen() + flow, 0, 255);
-//                int newBlue = (int) Math.clamp(current.copyBlue() + flow, 0, 255);
-
-                int newRed = (int) (current.copyRed() + flow);
-                int newGreen = (int) (current.copyGreen() + flow);
-                int newBlue = (int) (current.copyBlue() + flow);
+                int newRed = applyCapacityLimit(current.copyRed(),flow);
+                int newGreen = applyCapacityLimit(current.copyGreen(),flow);
+                int newBlue = applyCapacityLimit(current.copyBlue(),flow);
 
                 DataPixel evolutionPixel = new DataPixel(newRed, newGreen, newBlue);
                 evolutionImage.setRGB(x, y, evolutionPixel.copyPixel());
             }
         }
         return evolutionImage;
+    }
+    @Invariant("Метод по расчету новых значений для картинки. R_new = R + dt * module * kappa.")
+    public BufferedImage evolutionImageWithClamp(BufferedImage image, double[][] moduleGradient, double[][] curvature, double dt) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        BufferedImage evolutionImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                DataPixel current = new DataPixel(image.getRGB(x, y));
+
+                // Поток: dt * |∇I| * κ
+                double flow = dt * moduleGradient[x][y] * curvature[x][y];
+
+                // Новые значения с ограничением 0-255
+                int newRed = (int) Math.clamp(current.copyRed() + flow, 0, 255);
+                int newGreen = (int) Math.clamp(current.copyGreen() + flow, 0, 255);
+                int newBlue = (int) Math.clamp(current.copyBlue() + flow, 0, 255);
+
+                DataPixel evolutionPixel = new DataPixel(newRed, newGreen, newBlue);
+                evolutionImage.setRGB(x, y, evolutionPixel.copyPixel());
+            }
+        }
+        return evolutionImage;
+    }
+
+    @Invariant("Применяет поток с учётом вместимости ячейки [0, 255].")
+    private int applyCapacityLimit(double currentValue, double desiredFlow) {
+        double actualFlow;
+        if (desiredFlow > 0) {
+            actualFlow = Math.min(desiredFlow, 255 - currentValue);
+        } else {
+            actualFlow = Math.max(desiredFlow, -currentValue);
+        }
+        return (int) Math.round(currentValue + actualFlow);
     }
 
     @Invariant("Расчет одного шага.")
@@ -254,6 +270,42 @@ public class SnowFlake {
         for (int i = 0; i < iterations; i++) {
             System.out.println("Итерация №" + i);
             current = oneStepSolved(current, dt);
+        }
+
+        return current;
+    }
+
+    @Invariant("Расчет одного шага.")
+    public BufferedImage oneStepSolvedWithClamp(BufferedImage image, double dt){
+        // 1. Градиенты
+        DataPixelGradient[][] Ix = solvedHorizontalGradient(image);
+        DataPixelGradient[][] Iy = solvedVerticalGradient(image);
+
+        // 2. Модуль
+        double[][] module = solvedModuleGradientStandard(Iy, Ix);
+
+        // 3. Нормали
+        double[][] Nx = solvedUnitNormalVector(Ix, module);
+        double[][] Ny = solvedUnitNormalVector(Iy, module);
+
+        // 4. Кривизна
+        double[][] kx = solvedKxComponent(Nx);
+        double[][] ky = solvedKyComponent(Ny);
+        double[][] kappa = solvedCurvature(kx, ky);
+
+        // 5. Эволюция
+        BufferedImage result = evolutionImageWithClamp(image, module, kappa, dt);
+
+        return result;
+    }
+
+    @Invariant("Полноценный solver для расчета.")
+    public BufferedImage solveMeanCurvatureMotionImageWithClamp(BufferedImage image, int iterations, double dt) {
+        BufferedImage current = image;
+
+        for (int i = 0; i < iterations; i++) {
+            System.out.println("Итерация №" + i);
+            current = oneStepSolvedWithClamp(current, dt);
         }
 
         return current;

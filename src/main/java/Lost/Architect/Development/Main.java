@@ -4,6 +4,7 @@ import Lost.Architect.Development.Actions.ToposImage;
 import Lost.Architect.Development.Data.DataPixel;
 import Lost.Architect.Development.Soulvers.Engine.Engine;
 import Lost.Architect.Development.Soulvers.Flows.MeanCurvatureMotionImage;
+import Lost.Architect.Development.Soulvers.Flows.SnowFlake;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -14,7 +15,7 @@ import java.util.Objects;
 public class Main {
     public static void main(String[] args) throws IOException {
         //BufferedImage image = ImageIO.read(Objects.requireNonNull(Main.class.getResourceAsStream("/photo_2026-04-12_19-39-51.jpg")));
-        BufferedImage image = ImageIO.read(Objects.requireNonNull(Main.class.getResourceAsStream("/firstImage.jpg")));
+        BufferedImage image = ImageIO.read(Objects.requireNonNull(Main.class.getResourceAsStream("/thirdImage.jpg")));
         System.out.println("Ширина: " + image.getWidth());
         System.out.println("Высота: " + image.getHeight());
 
@@ -26,9 +27,11 @@ public class Main {
         ImageIO.write(toposImage,"jpg",output);
         System.out.println("Topos создан!");
 
-        MeanCurvatureMotionImage solver = new MeanCurvatureMotionImage();
+        //MeanCurvatureMotionImage solver = new MeanCurvatureMotionImage();
+        SnowFlake solver = new SnowFlake();
         //BufferedImage smoothImage = solver.solveMeanCurvatureMotionImage(image,500,0.1);
-        BufferedImage smoothImage = solver.solveMCMVolumePreserving(image,1000,0.2);
+        //BufferedImage smoothImage = solver.solveMCMVolumePreserving(image,200,0.3);
+        BufferedImage smoothImage = solver.solveMeanCurvatureMotionImageWithClamp(image,300,0.1);
         File output1 = new File("C:\\Users\\AlexPC\\Desktop\\image\\smoothImage.jpg");
         ImageIO.write(smoothImage,"jpg",output1);
         System.out.println("Smooth Image is created!!!");
